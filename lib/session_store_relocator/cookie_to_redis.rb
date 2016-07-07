@@ -19,7 +19,7 @@ module SessionStoreRelocator
       data = session.last
       data.delete('session_id')
       unless data.empty?
-        @cookie_store.send(:destroy_session, *(args.push({})))
+        @cookie_store.send(:destroy_session, *[env, session_id, {}])
         return session
       end
 
