@@ -16,12 +16,5 @@ module SessionStoreRelocator
     def commit_session(*args)
       @redis_session_store.send(:commit_session, *args)
     end
-
-    def load_session(*args)
-      session = @redis_session_store.send(:load_session, *args)
-      return session unless session.nil?
-
-      super
-    end
   end
 end
