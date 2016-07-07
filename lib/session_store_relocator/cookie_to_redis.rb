@@ -1,30 +1,27 @@
 require 'redis-session-store'
 
 module SessionStoreRelocator
-  class CookieToRedis < ActionDispatch::Session::CookieStore
+  class CookieToRedis < RedisSessionStore
     def initialize(app, options = {})
-      super(app, options[:cookie_store])
-      @redis_session_store = RedisSessionStore.new(app, options[:redis_session_store])
-      @options = options
+      super(app, options[:redis_session_store])
+      @cookie_store = ActionDispatch::Session::CookieStore.new(app, options[:cookie_store])
     end
 
     def destroy_session(*args)
       super.tap do
-        @redis_session_store.send(:destroy_session, *args)
+        @cookie_store.send(:destroy_session, *args)
       end
     end
 
-    def commit_session(*args)
-      @redis_session_store.send(:commit_session, *args)
-    end
-
-    def load_session(*args)
-      key = @options[:redis_session_store][:key]
+    def get_session(*args)
       env = args.first
-      sid = env['rack.request.cookie_hash'][key]
-
-      session = @redis_session_store.send(:get_session, *[env, sid])
-      return session unless session.nil?
+      session = @cookie_store.send(:load_session, env)
+      data = session.last
+      data.delete('session_id')
+      unless data.empty?
+        @cookie_store.send(:destroy_session, *(args.push({})))
+        return session
+      end
 
       super
     end
