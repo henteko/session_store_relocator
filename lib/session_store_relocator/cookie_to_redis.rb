@@ -21,9 +21,7 @@ module SessionStoreRelocator
       session = @redis_session_store.send(:load_session, *args)
       return session unless session.nil?
 
-      session = super(*args)
-      super.send(:destroy_session, *args)
-      session
+      super
     end
   end
 end
