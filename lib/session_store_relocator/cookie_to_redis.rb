@@ -5,6 +5,7 @@ module SessionStoreRelocator
     def initialize(app, options = {})
       super(app, options[:cookie_store])
       @redis_session_store = RedisSessionStore.new(app, options[:redis_session_store])
+      @options = options
     end
 
     def destroy_session(*args)
