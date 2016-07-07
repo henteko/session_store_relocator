@@ -17,14 +17,12 @@ module SessionStoreRelocator
       env = args.first
       session_id = args.last
 
-      session = session_class.new(@cookie_store, env)
-      data = session.to_hash.clone
+      session_id, session = @cookie_store.load_session(env)
+      data = session.clone
       data.delete('session_id')
       unless data.empty?
-        result = session.to_hash
-        set_session(env, session_id, result)
-        session.destroy
-        return [session_id, result]
+        @cookie_store.destroy_session(env, session_id)
+        return [session_id, session]
       end
 
       super
