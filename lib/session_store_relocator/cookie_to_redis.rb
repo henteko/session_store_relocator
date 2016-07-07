@@ -23,7 +23,7 @@ module SessionStoreRelocator
       env = args.first
       sid = env['rack.request.cookie_hash'][key]
 
-      session = @redis_session_store.send(:get_session, sid)
+      session = @redis_session_store.send(:get_session, *[env, sid])
       return session unless session.nil?
 
       super
