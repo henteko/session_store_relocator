@@ -17,7 +17,7 @@ module SessionStoreRelocator
       env = args.first
       session = @cookie_store.send(:load_session, env)
       data = session.last
-      data.delete('session_id')
+      session_id = data.delete('session_id')
       unless data.empty?
         @cookie_store.send(:destroy_session, *[env, session_id, {}])
         return session
