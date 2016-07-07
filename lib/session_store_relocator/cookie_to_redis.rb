@@ -17,11 +17,15 @@ module SessionStoreRelocator
       @redis_session_store.send(:commit_session, *args)
     end
 
-    def get_session(*args)
-      session = @redis_session_store.send(:get_session, *args)
+    def load_session(*args)
+      key = @options[:redis_session_store][:key]
+      env = args.first
+      sid = env['rack.request.cookie_hash'][key]
+
+      session = @redis_session_store.send(:get_session, sid)
       return session unless session.nil?
 
-      super(*args)
+      super
     end
   end
 end
