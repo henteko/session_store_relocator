@@ -18,7 +18,6 @@ module SessionStoreRelocator
     end
 
     def load_session(*args)
-      @redis_session_store.prefixed
       session = @redis_session_store.send(:get_session, *args)
       return session unless session.nil?
 
