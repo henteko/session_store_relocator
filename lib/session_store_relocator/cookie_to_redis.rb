@@ -22,6 +22,7 @@ module SessionStoreRelocator
       data.delete('session_id')
       unless data.empty?
         result = session.to_hash
+        set_session(env, session_id, result)
         session.destroy
         return [session_id, result]
       end
