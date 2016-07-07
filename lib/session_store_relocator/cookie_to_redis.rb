@@ -17,7 +17,7 @@ module SessionStoreRelocator
       @redis_session_store.send(:commit_session, *args)
     end
 
-    def load_session(*args)
+    def get_session(*args)
       session = @redis_session_store.send(:get_session, *args)
       return session unless session.nil?
 
