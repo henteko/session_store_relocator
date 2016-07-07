@@ -16,5 +16,13 @@ module SessionStoreRelocator
     def commit_session(*args)
       @redis_session_store.send(:commit_session, *args)
     end
+
+    def load_session(*args)
+      @redis_session_store.prefixed
+      session = @redis_session_store.send(:get_session, *args)
+      return session unless session.nil?
+
+      super(*args)
+    end
   end
 end
