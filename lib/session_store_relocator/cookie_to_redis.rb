@@ -18,8 +18,9 @@ module SessionStoreRelocator
       session_id = args.last
       session = session_class.new(@cookie_store, env)
       unless session.empty?
+        data = session.to_hash
         session.destroy
-        return [session_id, session.to_hash]
+        return [session_id, data]
       end
 
       super
